@@ -98,6 +98,7 @@ class ServiceController extends BaseController
                     'is_negotiable' =>   $request->is_negotiable,
                     'no_of_ppl'  =>  $request->no_of_ppl,
                     'status'  =>  $request->status,
+                    'start_date' => $request->start_date
                 ]);
                 if($services){
                     return $this->sendResponse(Response::HTTP_OK, $services, 'Services Data Has Been Successfully Updated.');
