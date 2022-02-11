@@ -188,11 +188,7 @@ class ServiceController extends BaseController
 
     // POST API for rating and reviews
     public function rating(Request $request){
-        // $services = \DB::table('services')
-        // ->where('user_id',$user->id)
-        // ->where('status',1)
-        // ->first();
-        // return $services ;
+
         $rating = \DB::table('ratings')
         ->insert([
             'user_id' => \Auth()->user()->id,
@@ -207,54 +203,68 @@ class ServiceController extends BaseController
         return $this->sendResponse(Response::HTTP_OK, $rating, 'Rating Stored Successfuly.');
     }
 
-    // $users = \DB::table('users')
-    // ->where('service_id',$id)   
-    // ->join('service_applications', 'users.id', '=', 'service_applications.user_id')
-    // ->select('users.*', 'service_applications.description', 'service_applications.amount')
-    // ->get();
+ 
     
 
     public function getRating(Request $request){
-        // $users = \DB::table('ratings')
-        //     ->where('service_id',1)
-        //     ->join('users', 'ratings.user_id', '=', 'users.id')
-        //     // ->join('services', 'ratings.user_rate_to', '=', 'services.id')
-        //     ->select('ratings.*', 'users.first_name', 'users.last_name', 'users.image')
-        //     ->get();
-        //     return $users;
 
-
-        // return $this->sendResponse(Response::HTTP_OK, , 'Profile get successfully');
-            $user = $request->user();
-            
-           //user
+        $user = $request->user();
         if($request->status==0){
             $users = \DB::table('ratings')
-            ->where('user_id', $user->id)
+            ->where('user_rate_to', $user->id)
             ->where('status','0')
-            ->join('users', 'ratings.user_id', '=', 'users.id')
+            ->join('users', 'ratings.user_rate_to', '=', 'users.id')
             ->select('ratings.*', 'users.first_name', 'users.last_name', 'users.image')
             ->get();
             $user->ratings = $users;
-             
-            
-
+            $services = \DB::table('ratings')->where('user_rate_to', $user->id)->where('status','0')->get();
+            $totalReviews=0;
+            $totalRatings=0;
+            foreach($services as $ser){
+                $totalRatings+=$ser->rating;
+                $totalReviews++;
+            }
+            if($totalReviews > 0)
+            {
+                $totalRatings = $totalRatings/$totalReviews;
+                $user->totalReviews = $totalReviews;
+                $user->totalRatings = $totalRatings;
+            }else{
+                $user->totalReviews = 'No Reviews';
+            }
             foreach($users as $use){
                 $user_rate = \DB::table('users')->where('id',$use->user_rate_to)->first();
                 $user->user_rate_to= $user_rate;
-
             }
-           
             return $this->sendResponse(Response::HTTP_OK, $user, 'Rating Fetched Successfuly.');
         }else if($request->status==1){
             $users = \DB::table('ratings')
-            ->where('user_rate_to',$user->id)
+            ->where('user_rate_to', $user->id)
             ->where('status','1')
-            ->join('users', 'ratings.user_id', '=', 'users.id')
+            ->join('users', 'ratings.user_rate_to', '=', 'users.id')
             ->select('ratings.*', 'users.first_name', 'users.last_name', 'users.image')
             ->get();
             $user->ratings = $users;
-            
+
+            $services = \DB::table('ratings')->where('user_rate_to', $user->id)->where('status','1')->get();
+            $totalReviews=0;
+            $totalRatings=0;
+            foreach($services as $ser){
+                $totalRatings+=$ser->rating;
+                $totalReviews++;
+            }
+            if($totalReviews > 0)
+            {
+                $totalRatings = $totalRatings/$totalReviews;
+                $user->totalReviews = $totalReviews;
+                $user->totalRatings = $totalRatings;
+            }else{
+                $user->totalReviews = 'No Reviews';
+            }
+            foreach($users as $use){
+                $user_rate = \DB::table('users')->where('id',$use->user_rate_to)->first();
+                $user->user_rate_to= $user_rate;
+            }
 
             return $this->sendResponse(Response::HTTP_OK, $user, 'Rating Fetched Successfuly.');
         }else{
