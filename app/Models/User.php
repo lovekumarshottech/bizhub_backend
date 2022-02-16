@@ -23,6 +23,8 @@ class User extends Authenticatable
         'last_name',
         'email',
         'phone',
+        'description',
+        'url',
         'image',
         'device_id',
         'device_type',

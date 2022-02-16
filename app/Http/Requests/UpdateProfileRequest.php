@@ -28,6 +28,8 @@ class UpdateProfileRequest extends FormRequest
         return [
             'first_name' => ['required', 'alpha_spaces', 'min:3', 'max:100'],
             'last_name' => ['required', 'alpha_spaces', 'min:3', 'max:100'],
+            'description' => ['sometimes'],
+            'url' => ['sometimes'],
             'image' => 'nullable'
         ];
     }
