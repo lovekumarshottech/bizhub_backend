@@ -27,6 +27,7 @@ class CreateUsersTable extends Migration
             //$table->string('verification_code')->nullable();
             $table->string('forgot_token')->nullable();
             $table->enum('is_active', array('0','1'))->default('0')->comment('0 for Inactive, 1 for active');
+            $table->enum('is_account_created', array('0','1'))->default('0')->comment('0 for No, 1 for yes');
             $table->enum('is_verified', array('0','1'))->default('0')->comment('0 for Not Verified, 1 for Verified');
             $table->enum('is_admin', array('0','1'))->default('0')->comment('0 for User, 1 for Admin');
             $table->timestamp('email_verified_at')->nullable();

@@ -107,6 +107,10 @@ class AuthController extends BaseController
     public function logout()
     {
         $user = Auth::user()->token();
+    
+        $userObject = Auth::user();
+        $userObject->device_id = '';
+        $userObject->save();
         $user->revoke();
         return $this->sendResponse(Response::HTTP_OK, [], 'User logged out successfully.');
     }

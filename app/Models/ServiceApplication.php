@@ -10,6 +10,8 @@ class ServiceApplication extends Model
 {
     use HasFactory;
 
+    public $timestamps = true;
+
     protected $fillable = [
         'user_id ',
         'service_id',
@@ -17,17 +19,20 @@ class ServiceApplication extends Model
         'description',
         'status',
     ];
-    public function user() {
+    public function user()
+    {
         return $this->belongsTo(User::class);
     }
-    public function service() {
+    public function service()
+    {
         return $this->belongsTo(Service::class);
     }
     public function comments()
     {
-        return $this->hasMany(Comment::class,'service_id','id')->whereNull('parent_id');
+        return $this->hasMany(Comment::class, 'service_id', 'id')->whereNull('parent_id');
     }
-    public function getCreatedAtAttribute($date) {
+    public function getCreatedAtAttribute($date)
+    {
         if (!empty($date))
             return Carbon::parse($date)->diffForHumans();
     }

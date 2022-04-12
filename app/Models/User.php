@@ -79,12 +79,19 @@ class User extends Authenticatable
         return $this->hasMany(ServiceApplication::class);
     }
 
-    public function isAuthUserAppliedService() {
+    public function application()
+    {
+        return $this->hasOne(ServiceApplication::class);
+    }
+
+    public function isAuthUserAppliedService()
+    {
         return $this->applications()->where('user_id',  auth()->id())->exists();
     }
 
 
-    public function isAuthUserOwnService() {
+    public function isAuthUserOwnService()
+    {
         return $this->services()->where('user_id',  auth()->id())->exists();
     }
 
@@ -93,6 +100,4 @@ class User extends Authenticatable
     {
         return $this->hasMany(Comment::class);
     }
-
-
 }

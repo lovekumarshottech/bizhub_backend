@@ -10,6 +10,8 @@ class Service extends Model
 {
     use HasFactory;
 
+    public $timestamps = true;
+
     protected $fillable = [
         'user_id ',
         'category_id',
@@ -27,16 +29,18 @@ class Service extends Model
 
 
     protected $hidden = [
-        'updated_at',
+        // 'updated_at',
     ];
 
-    public function getCreatedAtAttribute($date) {
+    public function getCreatedAtAttribute($date)
+    {
         if (!empty($date))
             return Carbon::parse($date)->diffForHumans();
     }
 
-    public function getAmountAttribute($value){
-        return "$".$value;
+    public function getAmountAttribute($value)
+    {
+        return "$" . $value;
     }
 
     public function scopeActive($query)
@@ -45,11 +49,13 @@ class Service extends Model
     }
 
 
-    public function category() {
+    public function category()
+    {
         return $this->belongsTo(Category::class);
     }
 
-    public function user() {
+    public function user()
+    {
         return $this->belongsTo(User::class);
     }
 
@@ -58,9 +64,13 @@ class Service extends Model
         return $this->hasMany(ServiceApplication::class);
     }
 
+    public function application()
+    {
+        return $this->hasOne(ServiceApplication::class);
+    }
+
     public function comments()
     {
         return $this->hasMany(Comment::class);
     }
-
 }

@@ -19,9 +19,9 @@ class CreateServiceApplicationsTable extends Migration
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->unsignedBigInteger('service_id')->nullable();
             $table->foreign('service_id')->references('id')->on('services')->onDelete('cascade');
-            $table->decimal('amount',8,2)->nullable();
+            $table->decimal('amount', 8, 2)->nullable();
             $table->longText('description')->nullable();
-            $table->enum('status', array('0','1','2','3'))->default('0')->comment('0 for Pending, 1 for Interviewing, 2 for Hired, 3 for Rejected');
+            $table->enum('status', array('0', '1', '2', '3'))->default('0')->comment('0 for Pending, 1 for Interviewing, 2 for Hired, 3 for Rejected');
             $table->timestamps();
         });
     }

@@ -31,6 +31,7 @@ class StoreServiceRequest extends FormRequest
             'description' => ['required'],
             'address' => ['required'],
             'latitude' => ['required'],
+            'is_negotiable' => ['required'],
             'longitude' => ['required'],
             'start_date' => ['required'],
             'no_of_ppl' => ['required'],
