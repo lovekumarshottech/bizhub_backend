@@ -29,7 +29,7 @@ class ServiceController extends BaseController
                        * cos( radians( longitude ) - radians(?)
                        ) + sin( radians(?) ) *
                        sin( radians( latitude ) ) )
-                     ) AS distance", [$request->latitude, $request->longitude, $request->latitude])
+                     ) AS distance", [$request->latitude, $request->longitude, $request->latitude])->where('start_date',  '>=', Carbon::now())
             ->whereHas('user', function ($q) {
                 $q->where('user_id', '<>', request()->user()->id);
             })->with(['user:id,image'])->withCount('applications')->when($request->amount_from != "", function ($q) use ($request) {
@@ -44,6 +44,7 @@ class ServiceController extends BaseController
                     $q->orWhere('description', 'like', "%{$value}%");
                 }
             })->active()->latest()->get();
+
         return $this->sendResponse(Response::HTTP_OK, $services, 'Services fetched successfuly.');
     }
 
@@ -372,8 +373,7 @@ class ServiceController extends BaseController
             ->where('id', '=', $paymentId)
             ->update(['transfer_id' => $transferId, 'payout_id' => $payout->id]);
 
-
-        return response()->json(['success' => true, 'data' => $payout]);
+        return response()->json(['success' => true, 'data' => $payout, 'message' => 'Job Successfully Completed.']);
     }
     // changes
     public function jobCancel(Request $request)
@@ -490,6 +490,8 @@ class ServiceController extends BaseController
         ])->where('id', $service->id)->first();
         $service->application = $service->application()->where('user_id', request()->user()->id)->with('user')->first();
         $service->comments = $service->comments()->with(['user', 'reply.user'])->whereNull('parent_id')->get();
+        $service->support = Support::where('service_id', $service->id)->first();
+
 
 
         // $service = $service->whereHas('user', function ($q) {
@@ -547,6 +549,4 @@ class ServiceController extends BaseController
             return $this->sendResponse(Response::HTTP_UNPROCESSABLE_ENTITY, [], 'You are un-authorized to inititate interview');
         }
     }
-
-
 }
