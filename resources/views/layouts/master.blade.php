@@ -18,17 +18,23 @@
     <link href="../assets/css/now-ui-dashboard.css?v=1.5.0" rel="stylesheet" />
     <!-- CSS Just for demo purpose, don't include it in your project -->
     <link href="../assets/demo/demo.css" rel="stylesheet" />
+
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+
     <style>
         /* all anchor tag hover background color */
         .achor-background-hover:hover {
-            background-color: orange;
+            background-color: green;
         }
     </style>
 </head>
 
 <body class="">
     <div class="wrapper ">
-        <div class="sidebar" data-color="orange">
+        <div class="sidebar" data-color="green">
             <!--
         Tip 1: You can change the color of the sidebar using: data-color="blue | green | orange | red | yellow"
     -->
@@ -49,30 +55,29 @@
                         </a>
                     </li>
                     <li @if (Request::is('admin/jobs')) class="active " @endif>
-                        <a href="{{ route('jobs') }}">
+                        <a href="{{ route('view.jobs') }}">
                             <i class="now-ui-icons education_atom"></i>
                             <p>Jobs</p>
                         </a>
                     </li>
                     <li @if (Request::is('admin/categories')) class="active " @endif>
-                        <a href="{{ route('categories') }}">
+                        <a href="{{ route('view.categories') }}">
                             <i class="fa-solid fa-dice-d20"></i>
                             <p>Categories</p>
                         </a>
                     </li>
                     <li @if (Request::is('admin/users')) class="active " @endif>
-                        <a href="{{ route('users') }}">
+                        <a href="{{ route('view.users') }}">
                             <i class="fa-solid fa-users"></i>
                             <p>Users</p>
                         </a>
                     </li>
                     <li @if (Request::is('admin/disputes')) class="active " @endif>
-                        <a href="{{ route('disputes') }}">
+                        <a href="{{ route('view.disputes') }}">
                             <i class="fa-solid fa-building"></i>
                             <p>Disputes</p>
                         </a>
-
-
+                    </li>
                 </ul>
             </div>
         </div>
@@ -80,21 +85,7 @@
             <!-- Navbar -->
             <nav class="navbar navbar-expand-lg navbar-transparent  bg-primary  navbar-absolute">
                 <div class="container-fluid">
-                    <div class="navbar-wrapper">
-                        <div class="navbar-toggle">
-                            <button type="button" class="navbar-toggler">
-                                <span class="navbar-toggler-bar bar1"></span>
-                                <span class="navbar-toggler-bar bar2"></span>
-                                <span class="navbar-toggler-bar bar3"></span>
-                            </button>
-                        </div>
-                        <!-- <a class="navbar-brand" href="#pablo">Table List</a> -->
-                    </div>
-                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
-                        <span class="navbar-toggler-bar navbar-kebab"></span>
-                        <span class="navbar-toggler-bar navbar-kebab"></span>
-                        <span class="navbar-toggler-bar navbar-kebab"></span>
-                    </button>
+
                     <div class="collapse navbar-collapse justify-content-end" id="navigation">
                         <form>
                             <div class="input-group no-border">
@@ -107,27 +98,7 @@
                             </div>
                         </form>
                         <ul class="navbar-nav">
-                            <!-- <li class="nav-item">
-                                <a class="nav-link" href="#pablo">
-                                    <i class="now-ui-icons media-2_sound-wave"></i>
-                                    <p>
-                                        <span class="d-lg-none d-md-block">Stats</span>
-                                    </p>
-                                </a>
-                            </li> -->
-                            <!-- <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <i class="now-ui-icons location_world"></i>
-                                    <p>
-                                        <span class="d-lg-none d-md-block">Some Actions</span>
-                                    </p>
-                                </a>
-                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
-                                    <a class="dropdown-item" href="{{route('logout.perform')}}">Logout</a>
-                                    <a class="dropdown-item" href="#">{{Auth::user()->first_name}}</a>
-                                    <a class="dropdown-item" href="#">Something else here</a>
-                                </div>
-                            </li> -->
+
                             <li class="nav-item">
                                 <a class="nav-link dropdown-toggle" id="navbarDropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     <i class="now-ui-icons users_single-02"></i>
@@ -137,10 +108,10 @@
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenu">
                                     <div>
-                                        <i class="fa-solid fa-user-circle" style="color: orange; padding-left: 20px;"></i>
-                                        <span style="color: orange; ">{{Auth::user()->first_name}}</span>
+                                        <i class="fa-solid fa-user-circle" style="color: green; padding-left: 20px;"></i>
+                                        <span style="color: green; ">{{Auth::user()->first_name}}</span>
                                     </div>
-                                    <!-- font awesome icon -->
+
 
                                     <div class="dropdown-divider"></div>
 
@@ -152,7 +123,7 @@
                 </div>
             </nav>
             <!-- End Navbar -->
-            <div class="panel-header panel-header-sm">
+            <div style="background-color: orangered;" class="panel-header panel-header-sm">
             </div>
             <div class="content">
                 @yield('content')
@@ -188,23 +159,14 @@
             </footer>
         </div>
     </div>
-    <!--   Core JS Files   -->
-    <script src="../assets/js/core/jquery.min.js"></script>
-    <script src="../assets/js/core/popper.min.js"></script>
-    <script src="../assets/js/core/bootstrap.min.js"></script>
-    <script src="../assets/js/plugins/perfect-scrollbar.jquery.min.js"></script>
-    <!--  Google Maps Plugin    -->
-    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY_HERE"></script>
-    <!-- Chart JS -->
-    <script src="../assets/js/plugins/chartjs.min.js"></script>
-    <!--  Notifications Plugin    -->
-    <script src="../assets/js/plugins/bootstrap-notify.js"></script>
-    <!-- Control Center for Now Ui Dashboard: parallax effects, scripts for the example pages etc -->
-    <script src="../assets/js/now-ui-dashboard.min.js?v=1.5.0" type="text/javascript"></script><!-- Now Ui Dashboard DEMO methods, don't include it in your project! -->
-    <script src="../assets/demo/demo.js"></script>
-    <script src="https://kit.fontawesome.com/a8558eb723.js" crossorigin="anonymous"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.js"></script>
+    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.1/js/bootstrap.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
     @yield('scripts')
-    
+
 </body>
 
 

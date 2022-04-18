@@ -489,7 +489,7 @@ class ServiceController extends BaseController
             'user', 'category'
         ])->where('id', $service->id)->first();
         $service->application = $service->application()->where('user_id', request()->user()->id)->with('user')->first();
-        $service->comments = $service->comments()->with(['user', 'reply.user'])->whereNull('parent_id')->get();
+        $service->comments = $service->comments()->with(['user', 'reply.user'])->whereNull('parent_id')->where('user_id', request()->user()->id)->get();
         $service->support = Support::where('service_id', $service->id)->first();
 
 

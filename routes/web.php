@@ -5,6 +5,8 @@ use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\HomeController;
 use App\Models\Category;
 use App\Models\Service;
+use App\Models\Support;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Contracts\Session\Session;
 use Illuminate\Support\Facades\Artisan;
@@ -35,31 +37,64 @@ use SebastianBergmann\Environment\Console;
 // });
 
 Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
-    Route::get('/', function () {
-        return view('admin.dashboard');
-    })->name('dashboard');
-
-    Route::get('/jobs', [HomeController::class, 'allServices'])->name('jobs');
-    Route::get('/categories', [HomeController::class, 'allCategories'])->name('categories');
-    Route::get('/users', [HomeController::class, 'allUsers'])->name('users');
-    Route::get('/disputes', [HomeController::class, 'allDisputes'])->name('disputes');
-    Route::get('/logout', [HomeController::class, 'logout'])->name('logout.perform');
+    Route::get('/', [HomeController::class, 'dashboard'])->name('dashboard');
 
 
-    //add and edit category view
-    Route::get('/add-category/{id?}', [HomeController::class, 'addOrEditCategory'])->name('add-category-view');
 
+    //categories listing method
+    Route::get('/categories/listing', [HomeController::class, 'allCategories'])->name('categories');
+    //category view
+    Route::get('/categories', [HomeController::class, 'categoryIndexView'])->name('view.categories');
+    //category add method
     Route::post('/add-category', [HomeController::class, 'addCategory'])->name('add-category');
-
+    //category edit method
     Route::put('/edit-category', [HomeController::class, 'editCategory'])->name('edit-category');
+    //category edit view and add view
+    Route::get('/add-category/{id?}', [HomeController::class, 'addOrEditCategory'])->name('add-category-view');
+    //category delete method
+    Route::get('/delete-category/{id}', [HomeController::class, 'deleteCategory'])->name('delete-category');
 
-    Route::get('/delete-category/{id}', function ($id) {
-        $category = Category::find($id)->delete();
 
-        if ($category) {
-            return redirect()->route('categories')->with('success', 'Category deleted successfully');
-        }
-    })->name('delete-category');
+
+
+    //users view
+    Route::get('/users', [HomeController::class, 'usersIndexView'])->name('view.users');
+    //users listing method
+    Route::get('/users/listing', [HomeController::class, 'allUsers'])->name('users');
+    //delete user method
+    Route::get('/delete-user/{id}', [HomeController::class, 'deleteUser'])->name('delete-user');
+
+
+
+
+    //all services method
+    Route::get('/jobs/listing', [HomeController::class, 'allServices'])->name('jobs');
+    //all services view
+    Route::get('/jobs', [HomeController::class, 'allServicesView'])->name('view.jobs');
+    //application view according to service
+    Route::get('/applications/{id}', [HomeController::class, 'applicationsIndexView'])->name('view.applications');
+    //application method according to service 
+    Route::get('/applications/listing/{id}', [HomeController::class, 'applications'])->name('applications');
+
+
+
+    //all services method
+    Route::get('/disputes/listing', [HomeController::class, 'allDisputes'])->name('disputes');
+    //all services view
+    Route::get('/disputes', [HomeController::class, 'allDisputesView'])->name('view.disputes');
+
+
+
+
+    //all services method
+    Route::get('/queries/listing', [HomeController::class, 'allQueries'])->name('queries');
+    //all services view
+    Route::get('/queries', [HomeController::class, 'allQueriesIndexView'])->name('view.queries');
+
+
+
+
+    Route::get('/logout', [HomeController::class, 'logout'])->name('logout.perform');
 });
 
 

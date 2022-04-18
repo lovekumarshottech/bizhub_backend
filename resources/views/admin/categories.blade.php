@@ -1,148 +1,115 @@
-@extends('layouts.master')
+@extends('layouts.admin')
 
 @section('title')
 Categories
 @endsection
 
+
+
 @section('content')
-<div class="row">
-    <div class="col-md-12">
-        <div class="card">
-            <div class="card-header">
-                <h4 class="card-title"> Categories</h4>
-
-                <a href="{{ route('add-category-view') }}" class="btn btn-primary btn-sm">
-                    <i class="fa fa-plus"></i>
-                    Add Category
-                </a>
-
+<div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
-            <!-- Danger modal on click visible-->
-
-            <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalCenterTitle">Delete Category</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            You can't undo this
-                            <div class="card text-white bg-danger mt-3 p-2">
-                                This is a warning - bad things may happen
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary">
-                                <ng-container i18n>Yes</ng-container>
-                            </button>
-                            <button type="button" class="btn btn-primary" data-dismiss="modal">
-                                <ng-container i18n>Close</ng-container>
-                            </button>
-                        </div>
-                    </div>
-                </div>
+            <div class="modal-body">
+                ...
             </div>
-
-            <!-- <div id="modal" class="modal-dialog d-none justify-content-center " style="position : absolute; z-index: 9999; align-items: center;  left: 30%  ">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title"></h4>
-                    </div>
-                    <div class="modal-body">
-                        You can't undo this
-                        <div class="card text-white bg-danger mt-3 p-2">
-                            This is a warning - bad things may happen
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" (click)="onConfirm()">
-                            <ng-container i18n>Yes</ng-container>
-                        </button>
-                        <button type="button" class="btn btn-secondary" (click)="close()">
-                            <ng-container i18n>Close</ng-container>
-                        </button>
-                    </div>
-                </div>
-            </div> -->
-
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table">
-                        <thead class=" text-primary">
-                            <th>
-                                Title
-                            </th>
-                            <th>
-                                Status
-                            </th>
-
-                        </thead>
-                        <tbody>
-
-                            @foreach($categories as $category)
-                            <tr>
-                                <td>
-                                    @if($category->is_active == 1)
-                                    <span class="badge badge-success">Active</span>
-                                    @else
-                                    <span class="badge badge-danger">Blocked</span>
-                                    @endif
-
-                                </td>
-                                <td>
-                                    {{$category->title}}
-                                </td>
-                                <td>
-                                    <a href="{{ route('add-category-view', ['id' => $category->id]) }}" class="btn btn-success btn-sm">
-                                        <i class="fa fa-edit"></i>
-                                        Edit
-                                    </a>
-
-                                    <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#exampleModalCenter">
-                                        <i class="fa fa-trash"></i>
-                                        Delete
-                                    </button>
-
-
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-danger" onclick="deleteCategory()">Delete</button>
             </div>
         </div>
     </div>
-
 </div>
 
+<div class="container mt-5">
+    <div class=" row">
+        <h2 class="">Categories</h2>
+        <div style="padding-left: 30px;"></div>
 
 
+        <a href="{{ route('add-category-view') }}" class="btn btn-primary">
+            <i class="fa fa-plus"></i>
+            Add New
+        </a>
+    </div>
+
+    <table class="table table-bordered yajra-datatable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Is Active</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
 @endsection
 
 
 @section('scripts')
 <script>
-    // function close() {
-    //     // document.getElementById('modal').style.visibility = 'hidden';
-    //     document.getElementById('modal').style.display = 'none';
+    var id = '';
 
-    // }
+    function openModal($id) {
+        id = $id;
+        $('#exampleModalLong').modal('show');
+    }
 
-    // function open() {
+    function deleteCategory() {
 
-
-    //     // document.getElementById('modal').style.visibility = 'visible';
-    //     document.getElementById('modal').style.display = 'flex';
-
-    // }
-    //visible and hide function
-
-    function onDelete(id) {
-        close();
+        let url = "{{ route('delete-category', ':id') }}";
+        url = url.replace(':id', id);
+        document.location.href = url;
     }
 </script>
 
+<script type="text/javascript">
+    $(function() {
+        var table = $('.yajra-datatable').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: "{{ route('categories') }}",
+            columns: [{
+                    data: 'id',
+                    name: 'id'
+                },
+                {
+                    data: 'title',
+                    name: 'title'
+                },
+                {
+                    data: 'description',
+                    name: 'description'
+                },
+                {
+                    data: 'is_active',
+                    name: 'is_active',
+                    render: function(data, type, row) {
+                        if (data == 1) {
+                            return '<span class="badge badge-success">Active</span>';
+                        } else {
+                            return '<span class="badge badge-danger">Inactive</span>';
+                        }
+                    }
+                },
+                {
+                    data: 'action',
+                    name: 'action',
+                    orderable: true,
+                    searchable: true
+
+                }
+            ]
+        });
+    })
+</script>
 @endsection

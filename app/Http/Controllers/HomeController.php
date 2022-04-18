@@ -4,9 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Service;
+use App\Models\ServiceApplication;
 use App\Models\Support;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
+use Yajra\DataTables\Facades\DataTables;
+use Yajra\DataTables\Services\DataTable;
 
 class HomeController extends Controller
 {
@@ -32,28 +37,74 @@ class HomeController extends Controller
 
 
     //all services view
+    public function allServicesView()
+    {
+        return view('admin.jobs',);
+    }
+
     public function allServices()
     {
-        $services = Service::with(['user', 'category'])->get();
-        return view('admin.jobs', compact('services'));
+        if (request()->ajax()) {
+            $services = Service::with(['user', 'category'])->get();
+            //counting the number of service applications
+            foreach ($services as $service) {
+                $service->applications_count = $service->applications()->count();
+            }
+            return DataTables::of($services)
+                ->addColumn('action', function ($service) {
+                    return '<a href = "' . route('view.applications', $service->id) . '" class="btn btn-danger btn-sm">' . $service->applications_count . '</a>';
+                })
+                ->make(true);
+        }
+        return view('admin.jobs');
     }
 
 
 
     //all categories view
-    public function allCategories()
+    public function allCategories(Request $request)
     {
-        $categories = Category::all();
-        return view('admin.categories', compact('categories'));
+        if ($request->ajax()) {
+            $categories = Category::latest()->get();
+            return DataTables::of($categories)
+                ->addIndexColumn()
+                ->addColumn('action', function ($category) {
+                    return '<a href="' . route('add-category-view', $category->id) . '" class="btn btn-primary btn-sm">Edit</a>
+                    <a  class="btn btn-danger btn-sm" onClick="openModal(' . $category->id . ')">Delete</a>';
+                })
+                ->rawColumns(['action'])
+                ->make(true);
+        }
+        // $categories = Category::all();
+        // return view('admin.categories', compact('categories'));
     }
+
+    public function categoryIndexView()
+    {
+        return view('admin.categories');
+    }
+
+    public function usersIndexView()
+    {
+        return view('admin.users');
+    }
+
 
 
 
     //all users view
     public function allUsers()
     {
-        $users = User::all();
-        return view('admin.users', compact('users'));
+        if (request()->ajax()) {
+            $users = User::latest()->get();
+            return DataTables::of($users)
+                ->addIndexColumn()
+                ->addColumn('action', function ($user) {
+                    return '<a onClick="openModal(' . $user->id . ')" class="btn btn-danger btn-sm">Delete</a>';
+                })
+                ->rawColumns(['action'])
+                ->make(true);
+        }
     }
 
 
@@ -61,13 +112,32 @@ class HomeController extends Controller
     //all disputes with supportimages view
     public function allDisputes()
     {
-        $disputes = Support::with(['supportImages', 'service', 'service.user'])->get();
-        //application which is cancel according to the service
-        foreach ($disputes as $dispute) {
-            $dispute->application = $dispute->service->application()->where('service_id', $dispute->service_id)->where('status', '4')->with('user')->first();
+
+        if (request()->ajax()) {
+            $disputes = Support::with(['supportImages', 'service', 'service.user'])->get();
+            //application which is cancel according to the service
+            foreach ($disputes as $dispute) {
+                $dispute->application = $dispute->service->application()->where('service_id', $dispute->service_id)->where('status', '4')->with('user')->first();
+            }
+            return DataTables::of($disputes)
+                ->addIndexColumn()
+                ->addColumn('action', function ($dispute) {
+                    return '<a href="" class="btn btn-danger btn-sm">Delete</a>';
+                })
+                ->rawColumns(['action'])
+                ->make(true);
         }
+    }
+    public function allDisputesView()
+    {
+        // $disputes = Support::with(['supportImages', 'service', 'service.user'])->get();
+        // //application which is cancel according to the service
+        // foreach ($disputes as $dispute) {
+        //     $dispute->application = $dispute->service->application()->where('service_id', $dispute->service_id)->where('status', '4')->with('user')->first();
+        // }
         // return response()->json($disputes);
-        return view('admin.disputes', compact('disputes'));
+
+        return view('admin.disputes');
     }
 
 
@@ -110,12 +180,73 @@ class HomeController extends Controller
         $category->title = request('title');
         $category->description = request('description');
         $category->is_active = request('is_active');
+        // return response()->json($category);
         $category->save();
 
         if ($category) {
-            return redirect()->route('categories')->with('success', 'Category updated successfully');
-        } else {
-            return redirect()->route('add-category-view')->with('error', 'Category could not be updated');
+            return redirect()->route('view.categories')->with('success', 'Category updated successfully');
         }
+    }
+
+    public function deleteCategory($id)
+    {
+        $category = Category::find($id)->delete();
+
+        if ($category) {
+            return redirect()->route('view.categories')->with('success', 'Category deleted successfully');
+        }
+    }
+    public function deleteUser($id)
+    {
+        $user = User::find($id)->delete();
+
+        if ($user) {
+            return redirect()->route('view.users')->with('success', 'User deleted successfully');
+        }
+    }
+
+    public function applications($id)
+    {
+
+        if (request()->ajax()) {
+            $applications = ServiceApplication::with(['user', 'service'])->where('service_id', $id)->get();
+            return DataTables::of($applications)
+                ->make(true);
+        }
+    }
+    public function applicationsIndexView($id)
+    {
+        return view('admin.applications', compact('id'));
+    }
+    public function allQueries()
+    {
+
+        if (request()->ajax()) {
+            $queries =  \DB::table('contact_us')->get();
+            return DataTables::of($queries)
+                ->make(true);
+        }
+    }
+    public function allQueriesIndexView()
+    {
+        $queries =  \DB::table('contact_us')->count();
+
+        return view('admin.contact-us');
+    }
+
+    public function dashboard()
+    {
+        $users_count = User::where('is_admin', '0')->count();
+        $queries_count =  \DB::table('contact_us')->count();
+        $services_count = Service::count();
+        $dispute_count = Support::where('status', '0')->count();
+        return view('admin.dashboard', compact('users_count', 'services_count', 'dispute_count', 'queries_count'));
+    }
+
+    public function logout(Request $request)
+    {
+        Auth::logout();
+        Session::flush();
+        return redirect('/login');
     }
 }

@@ -1,100 +1,95 @@
-@extends('layouts.master')
+@extends('layouts.admin')
 
 @section('title')
 Jobs
 @endsection
 
+
+
 @section('content')
-<div class="row">
-    <div class="col-md-12">
-        <div class="card">
-            <div class="card-header">
-                <h4 class="card-title"> Jobs</h4>
-            </div>
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table">
-                        <thead class=" text-primary">
-                            <th>
-                                Status
-                            </th>
-                            <th>
-                                Posted By
-                            </th>
-                            <th>
-                                Job Title
-                            </th>
-                            <th>
-                                Description
-                            </th>
-                            <th>
-                                Category
-                            </th>
-
-                            <th class="text-right">
-                                Amount
-                            </th>
-                        </thead>
-                        <tbody>
-
-                            @foreach($services as $service)
-                            <tr>
-                                <td>
-                                    @if($service->status == 0)
-                                    <span class="badge badge-info">Active</span>
-                                    @elseif($service->status == 1)
-                                    <span class="badge badge-success">Competed</span>
-                                    @elseif($service->status == 2)
-                                    <span class="badge badge-warning">Expired</span>
-                                    @elseif($service->status == 3)
-                                    <span class="badge badge-success">Hired</span>
-                                    @elseif($service->status == 4)
-                                    <span class="badge badge-danger">Cancelled</span>
-
-                                    @endif
-
-
-
-                                </td>
-                                <td>
-                                    {{$service->user->first_name}} {{$service->user->last_name}}
-                                </td>
-                                <td>
-                                    {{$service->title}}
-                                </td>
-                                <td>
-                                    {{$service->description}}
-                                </td>
-                                <td>
-                                    {{$service->category->title}}
-                                </td>
-
-                                <td class="text-right">
-                                    {{$service->amount}}
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-
+<div class="container mt-5">
+    <h2 class="mb-4">Jobs</h2>
+    <table class="table table-bordered yajra-datatable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Amount</th>
+                <th>Posted By</th>
+                <th>Category</th>
+                <th>Description</th>
+                <th>Status</th>
+                <th>Applied Users</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
 </div>
-
-
-
 @endsection
 
 
 @section('scripts')
-<!-- <script>
-    // function myFunction(val) {
-    //     alert(val);
-    // }
-    $("#myId").on('input', function() {
-        alert(Jobs);
-    });
-</script> -->
+
+<script type="text/javascript">
+    $(function() {
+        var table = $('.yajra-datatable').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: "{{ route('jobs') }}",
+            columns: [{
+                    data: 'id',
+                    name: 'id'
+                },
+                {
+                    data: 'title',
+                    name: 'title'
+                },
+                {
+                    data: 'amount',
+                    name: 'amount'
+                },
+                {
+                    data: 'user.first_name',
+                    name: 'user.first_name',
+                    render: function(data, type, row) {
+                        return row.user.first_name + ' ' + row.user.last_name;
+                    }
+                },
+                {
+                    data: 'category.title',
+                    name: 'category'
+                },
+                {
+                    data: 'description',
+                    name: 'description'
+                },
+                {
+                    data: 'status',
+                    name: 'status',
+                    render: function(data, type, row) {
+                        if (row.status == 0) {
+                            return '<span class="badge badge-success">Active</span>';
+                        } else if (row.status == 1) {
+                            return '<span class="badge badge-success">Completed</span>';
+                        } else if (row.status == 2) {
+                            return '<span class="badge badge-warning">Expired</span>';
+                        } else if (row.status == 3) {
+                            return '<span class="badge badge-warning">Hired</span>';
+                        } else if (row.status == 4) {
+                            return '<span class="badge badge-danger">Cancelled</span>';
+                        }
+                    }
+                },
+                {
+                    'data': 'action',
+                    'name': 'action',
+                    'orderable': false,
+                    'searchable': false
+                }
+
+
+            ]
+        });
+    })
+</script>
 @endsection

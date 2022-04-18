@@ -1,82 +1,90 @@
-@extends('layouts.master')
+@extends('layouts.admin')
 
 @section('title')
 Disputes
 @endsection
 
+
+
 @section('content')
-<div class="row">
-    <div class="col-md-12">
-        <div class="card">
-            <div class="card-header">
-                <h4 class="card-title"> Users</h4>
-            </div>
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table">
-                        <thead class=" text-primary">
-                            <th>
-                                Dispute Title
-                            </th>
-                            <th>
-                                Dispute Description
-                            </th>
+<div class="container mt-5">
+    <h2 class="mb-4">Disputes</h2>
+    <table class="table table-bordered yajra-datatable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Filled By</th>
+                <th>Against</th>
+                <th>Status</th>
+                <th>Action</th>
 
-                            <th>
-                                Dispute Status
-                            </th>
-                            <th>
-                                Filled Against
-                            </th>
-                            <th>
-                                Filled By
-                            </th>
-                            <th>
-                                Dispute Date
-                            </th>
-                        </thead>
-                        <tbody>
-                            @foreach($disputes as $dispute)
-                            <tr>
-                                <td>
-                                    {{$dispute->title}}
-                                </td>
-                                <td>
-                                    {{$dispute->description}}
-                                </td>
-
-                                <td>
-                                    @if($dispute->status == 0)
-                                    <span class="badge badge-danger">Active</span>
-                                    @elseif($dispute->status == 1)
-                                    <span class="badge badge-success">Closed</span>
-                                    @endif
-                                </td>
-                                <td>
-                                    {{$dispute->service->user->first_name}} {{$dispute->service->user->last_name}}
-                                </td>
-                                <td>
-                                    {{$dispute->application->user->first_name}} {{$dispute->application->user->last_name}}
-                                </td>
-                                <td>
-                                    {{$dispute->created_at}}
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
 </div>
-
-
-
 @endsection
 
 
 @section('scripts')
 
+<script type="text/javascript">
+    $(function() {
+        var table = $('.yajra-datatable').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: "{{ route('disputes') }}",
+            columns: [{
+                    data: 'id',
+                    name: 'id'
+                },
+                {
+                    data: 'title',
+                    name: 'title'
+                },
+                {
+                    data: 'description',
+                    name: 'description'
+
+                },
+                {
+                    data: 'service.user.first_name',
+                    name: 'Filled By',
+                    render: function(data, type, row) {
+                        return row.service.user.first_name + ' ' + row.service.user.last_name;
+                    }
+                },
+                {
+                    data: 'application.user.first_name',
+                    render: function(data, type, row) {
+                        return row.application.user.first_name + ' ' + row.application.user.last_name;
+                    },
+                    name: 'Against',
+
+                },
+
+                {
+                    data: 'status',
+                    name: 'status',
+                    render: function(data, type, row) {
+                        if (row.status == 0) {
+                            return '<span class="badge badge-success">Active</span>';
+                        } else if (row.status == 1) {
+                            return '<span class="badge badge-danger">Cancelled</span>';
+                        }
+                    }
+                },
+
+                {
+                    data: 'action',
+                    name: 'action',
+                    orderable: true,
+                    searchable: true
+                }
+            ]
+        });
+    })
+</script>
 @endsection

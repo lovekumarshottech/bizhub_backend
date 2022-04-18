@@ -10,10 +10,10 @@
     <!-- CSS Files -->
 
 
-    <link href="../assets/css/now-ui-dashboard.css" rel="stylesheet" />
-    <link href="../assets/demo/demo.css" rel="stylesheet" />
-    <link href="../assets/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="../assets/css/now-ui-dashboard.css?v=1.5.0" rel="stylesheet" />
+    <link href="/assets/css/now-ui-dashboard.css" rel="stylesheet" />
+    <link href="/assets/demo/demo.css" rel="stylesheet" />
+    <link href="/assets/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="/assets/css/now-ui-dashboard.css?v=1.5.0" rel="stylesheet" />
     <script src="https://kit.fontawesome.com/a8558eb723.js" crossorigin="anonymous"></script>
     <style>
         * {
@@ -36,8 +36,9 @@
             @if(!isset($category))
             <form id="myForm" method="post" action="{{ url('/admin/add-category')}}">
                 @else
-                <form id="myForm" method="PUT" action="{{ url('/admin/edit-category')}}">
+                <form id="myForm" method="POST" action="{{ url('/admin/edit-category')}}">
 
+                    @method('PUT')
                     <input type="hidden" name="id" value="{{ $category->id }}">
                     @endif
 
