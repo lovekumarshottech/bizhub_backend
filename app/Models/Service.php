@@ -73,4 +73,8 @@ class Service extends Model
     {
         return $this->hasMany(Comment::class);
     }
+    public function support()
+    {
+        return $this->hasOne(Support::class);
+    }
 }

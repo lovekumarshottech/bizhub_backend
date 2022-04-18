@@ -229,8 +229,6 @@ class HomeController extends Controller
     }
     public function allQueriesIndexView()
     {
-        $queries =  \DB::table('contact_us')->count();
-
         return view('admin.contact-us');
     }
 
