@@ -50,19 +50,19 @@ Disputes
 
                 },
                 {
-                    data: 'service.user.first_name',
-                    name: 'Filled By',
-                    render: function(data, type, row) {
-                        return row.service.user.first_name + ' ' + row.service.user.last_name;
-                    }
-                },
-                {
                     data: 'application.user.first_name',
                     render: function(data, type, row) {
                         return row.application.user.first_name + ' ' + row.application.user.last_name;
                     },
-                    name: 'Against',
+                    name: 'Filled By',
 
+                },
+                {
+                    data: 'service.user.first_name',
+                    name: 'Against',
+                    render: function(data, type, row) {
+                        return row.service.user.first_name + ' ' + row.service.user.last_name;
+                    }
                 },
 
                 {
@@ -72,7 +72,7 @@ Disputes
                         if (row.status == 0) {
                             return '<span class="badge badge-success">Active</span>';
                         } else if (row.status == 1) {
-                            return '<span class="badge badge-danger">Cancelled</span>';
+                            return '<span class="badge badge-danger">Closed</span>';
                         }
                     }
                 },

@@ -36,6 +36,8 @@ use SebastianBergmann\Environment\Console;
 //     // return view('welcome');
 // });
 
+
+
 Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
     Route::get('/', [HomeController::class, 'dashboard'])->name('dashboard');
 
@@ -78,10 +80,12 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
 
 
 
-    //all services method
+    //all disputes method
     Route::get('/disputes/listing', [HomeController::class, 'allDisputes'])->name('disputes');
-    //all services view
+    //all disoutes view
     Route::get('/disputes', [HomeController::class, 'allDisputesView'])->name('view.disputes');
+    // view dispute 
+    Route::get('/dispute/{id}', [HomeController::class, 'showDispute'])->name('view.dispute');
 
 
 
@@ -90,6 +94,11 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
     Route::get('/queries/listing', [HomeController::class, 'allQueries'])->name('queries');
     //all services view
     Route::get('/queries', [HomeController::class, 'allQueriesIndexView'])->name('view.queries');
+
+
+
+    Route::get('/payout/{id}', [HomeController::class, 'payout'])->name('payout');
+    Route::get('/refund/{id}', [HomeController::class, 'payout'])->name('refund');
 
 
 

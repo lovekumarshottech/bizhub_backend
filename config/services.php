@@ -29,9 +29,9 @@ return [
         'secret' => env('AWS_SECRET_ACCESS_KEY'),
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
-
     'stripe' => [
-        'secret' => env('STRIPE_SECRET'),
-    ],
+        'secret' => 'sk_test_51IdtHCGmNbFgnn002634Wne6qPdy0KfZyH19qLIq7SCFxNdWygtpxUc0d9VFQs55dlWs2sAp5O565RdTYfMpe0Op00fMGUCof1',
+        'publish' => 'pk_test_51IdtHCGmNbFgnn00GS9N3SgfZldmDiOvK5WbKahPhImD2ThfzRqUKTMYG3i4xwTcphNBUb9FfeQFmBK37t3h4Ewh00JnMUB9Ul',
+    ]
 
 ];

@@ -93,6 +93,34 @@ Dashboard
                         <a href="{{ route('view.queries') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                     </div>
                 </div>
+                <div class="col">
+                    <!-- small box -->
+                    <div class="small-box bg-success">
+                        <div class="inner">
+                            <h3>{{ $income_percents}}</h3>
+                            <p>Admin Earning</p>
+                        </div>
+                        <div class="icon">
+
+                            <i class="fas fa-money-bill-wave"></i>
+                        </div>
+                        <a href="" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                    </div>
+                </div>
+                <div class="col">
+                    <!-- small box -->
+                    <div class="small-box bg-danger">
+                        <div class="inner">
+                            <h3>{{ $pending_payments}}</h3>
+                            <p>Pending payments</p>
+                        </div>
+                        <div class="icon">
+
+                            <i class="ion ion-pie-graph"></i>
+                        </div>
+                        <a href="" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                    </div>
+                </div>
             </div>
         </div>
         <!-- /.container-fluid -->

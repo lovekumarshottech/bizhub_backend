@@ -316,35 +316,10 @@ class ServiceController extends BaseController
             return $this->sendError(Response::HTTP_OK, $user, 'Rating Fetched Successfuly.');
         }
     }
-    // changes
+
     public function jobComplete($service_id)
     {
-        // return $service_id;
-        $pay_userid = \DB::table('payments')    //to fetch user_id and amount
-            ->select('id', 'to_user_id', 'amount')
-            ->where('service_id', $service_id)->first();
-        // return $pay_userid;
-        //fetch to_user_id,amount from the payment table through service id
-        //fetch account number from user table through to_user_id
-        $acount_number = \DB::table('users')  //to fetch acount number
-            ->select('account_id')
-            ->where('id', $pay_userid->to_user_id)->first();
-        $amount_payment_table = $pay_userid->amount;
-        $amount_payment_table = round($amount_payment_table - ($amount_payment_table * (config('app.admin_cut') / 100)));
-        //on job accept we will send you the transaction id and other parameters u need we will send to you.
-        //add transaction id in the table
 
-        //on job complete method will be post body parameter will be account id and id of the service
-
-        //transfer to the user when the job is complete
-        //cut the fees
-        \Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
-        $transfer = \Stripe\Transfer::create([
-            "amount" => $amount_payment_table, #this is after admin cut
-            "currency" => "usd",
-            "destination" => $acount_number->account_id,
-        ]);
-        // transfer id where to store in the table??
         $job = \DB::table('services')
             ->where('id', '=', $service_id) // $id represents service_id ??
             ->where('status', '=', '3')
@@ -354,27 +329,9 @@ class ServiceController extends BaseController
             ->where('service_id', $service_id) // $id represents service_id ??
             ->update(['status' => '1']);
 
-        return $this->payout($acount_number->account_id, $amount_payment_table, $pay_userid->id, $transfer->id);
+        return $this->sendResponse(Response::HTTP_OK, $job, 'Job Completed Successfuly.');
     }
 
-    public function payout($accountId, $amount, $paymentId, $transferId)
-    {
-        // return 'asd';
-        \Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
-
-        $payout = \Stripe\Payout::create([
-            'amount' => $amount,
-            'currency' => 'usd',
-        ], [
-            'stripe_account' => $accountId,
-        ]);
-
-        \DB::table('payments')
-            ->where('id', '=', $paymentId)
-            ->update(['transfer_id' => $transferId, 'payout_id' => $payout->id]);
-
-        return response()->json(['success' => true, 'data' => $payout, 'message' => 'Job Successfully Completed.']);
-    }
     // changes
     public function jobCancel(Request $request)
     {
@@ -491,6 +448,7 @@ class ServiceController extends BaseController
         $service->application = $service->application()->where('user_id', request()->user()->id)->with('user')->first();
         $service->comments = $service->comments()->with(['user', 'reply.user'])->whereNull('parent_id')->where('user_id', request()->user()->id)->get();
         $service->support = $service->support;
+        $service->rating = \DB::table('ratings')->where('user_id', request()->user()->id)->where('service_id', $service->id)->first();
 
 
 

@@ -28,7 +28,7 @@ class Support extends Model
         return $this->belongsTo(Service::class);
     }
 
-    public function supportImages()
+    public function images()
     {
         return $this->hasMany(SupportImages::class);
     }
