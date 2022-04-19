@@ -72,6 +72,8 @@ class ServiceController extends BaseController
                 ]);
             }
         ])->orderBy('created_at', 'DESC')->get();
+
+
         //['quotationInvoice' => function($q){ $q->with(['user']); }])->orderBy('id', 'DESC')
 
         return $this->sendResponse(Response::HTTP_OK, $services, 'Your posted Services fetched successfuly.');
@@ -153,6 +155,7 @@ class ServiceController extends BaseController
                     return $q->select('id', 'user_id', 'service_id', 'comment', 'created_at')->where('parent_id', null);
                 }, 'comments.reply:id,parent_id,user_id,comment,service_id,created_at', 'comments.reply.user:id,device_id,first_name,last_name,image'
             ])->where('id', $service->id)->first();
+            $service->rating = \DB::table('ratings')->where(['user_id' => request()->user()->id], ['service_id' => $id])->first();
 
             foreach ($serviceData->applications as $apps) {
                 $totalReviews = 0;
@@ -268,9 +271,11 @@ class ServiceController extends BaseController
                 ->where('user_rate_to', $user->id)
                 ->where('status', '1')
                 ->leftJoin('users', 'ratings.user_id', '=', 'users.id')
+                ->orderBy('created_at', 'desc')
                 ->get();
             $user->ratings = $users;
-            $services = \DB::table('ratings')->where('user_rate_to', $user->id)->where('status', '1')->get();
+            $services = \DB::table('ratings')->where('user_rate_to', $user->id)->where('status', '1')->orderBy('created_at', 'desc')->get();
+
             $totalReviews = 0;
             $totalRatings = 0;
             foreach ($services as $ser) {
@@ -291,11 +296,12 @@ class ServiceController extends BaseController
                 ->where('user_rate_to', $user->id)
                 ->where('status', '0')
                 ->leftJoin('users', 'ratings.user_id', '=', 'users.id')
+                ->orderBy('created_at', 'desc')
                 ->select('ratings.*', 'users.first_name', 'users.last_name', 'users.image')
                 ->get();
             $user->ratings = $users;
 
-            $services = \DB::table('ratings')->where('user_rate_to', $user->id)->where('status', '0')->get();
+            $services = \DB::table('ratings')->where('user_rate_to', $user->id)->where('status', '0')->orderBy('created_at', 'desc')->get();
             $totalReviews = 0;
             $totalRatings = 0;
             foreach ($services as $ser) {
@@ -313,9 +319,10 @@ class ServiceController extends BaseController
 
             return $this->sendResponse(Response::HTTP_OK, $user, 'Rating Fetched Successfuly.');
         } else {
-            return $this->sendError(Response::HTTP_OK, $user, 'Rating Fetched Successfuly.');
+            return $this->sendError(Response::HTTP_OK, $user, 'Rating Error.');
         }
     }
+
 
     public function jobComplete($service_id)
     {
@@ -448,7 +455,8 @@ class ServiceController extends BaseController
         $service->application = $service->application()->where('user_id', request()->user()->id)->with('user')->first();
         $service->comments = $service->comments()->with(['user', 'reply.user'])->whereNull('parent_id')->where('user_id', request()->user()->id)->get();
         $service->support = $service->support;
-        $service->rating = \DB::table('ratings')->where('user_id', request()->user()->id)->where('service_id', $service->id)->first();
+        // $service->rating = \DB::table('ratings')->where('user_rate_to', request()->user()->id)->where('service_id', $service->id)->first();
+        $service->rating = \DB::table('ratings')->where(['user_id' => request()->user()->id], ['service_id' => $service->id])->first();
 
 
 
