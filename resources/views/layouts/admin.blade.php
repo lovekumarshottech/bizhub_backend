@@ -9,13 +9,13 @@
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="/admins/plugins/fontawesome-free/css/all.min.css">
+    <link rel="stylesheet" href="{{ URL::to('')}}/admins/plugins/fontawesome-free/css/all.min.css">
     <!-- Ionicons -->
     <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
     <!-- Theme style -->
-    <link rel="stylesheet" href="/admins/dist/css/adminlte.min.css">
+    <link rel="stylesheet" href="{{ URL::to('')}}/admins/dist/css/adminlte.min.css">
 
-    <link rel="stylesheet" href="/admins/plugins/toastr/toastr.min.css">
+    <link rel="stylesheet" href="{{ URL::to('')}}/admins/plugins/toastr/toastr.min.css">
     @yield('styles')
     <style>
         .dataTables_filter {
@@ -28,7 +28,7 @@
     <div class="wrapper">
         <!-- Preloader -->
         <div class="preloader flex-column justify-content-center align-items-center">
-            <img class="animation__shake" src="/admins/dist/img/AdminLTELogo.png" alt="AdminLTELogo" height="60" width="60">
+            <img class="animation__shake" src="{{ URL::to('')}}/admins/dist/img/AdminLTELogo.png" alt="AdminLTELogo" height="60" width="60">
         </div>
         <!-- Navbar -->
         <nav class="main-header navbar navbar-expand navbar-white navbar-light">
@@ -57,7 +57,7 @@
         <aside class="main-sidebar sidebar-dark-primary elevation-4" style="background-color: green;">
             <!-- Brand Logo -->
             <a href="#" class="brand-link">
-                <img src="/admins/dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+                <img src="{{ URL::to('')}}/admins/dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
                 <span class="brand-text font-weight-light">BIZHUB</span>
             </a>
             <!-- Sidebar -->
@@ -65,7 +65,7 @@
                 <!-- Sidebar user panel (optional) -->
                 <div class="user-panel mt-3 pb-3 mb-3 d-flex">
                     <div class="image">
-                        <img src="/admins/{{auth()->user()->image}}" class="img-circle elevation-2" alt="User Image">
+                        <img src="{{ URL::to('')}}/admins/dist/img/avatar4.png" class="img-circle elevation-2" alt="User Image">
                     </div>
                     <div class="info">
                         <a href="#" class="d-block">{{ auth()->user()->first_name }}</a>
@@ -140,13 +140,13 @@
     </div>
     <!-- ./wrapper -->
     <!-- jQuery -->
-    <script src="/admins/plugins/jquery/jquery.min.js"></script>
+    <script src="{{ URL::to('')}}/admins/plugins/jquery/jquery.min.js"></script>
     <!-- Bootstrap 4 -->
-    <script src="/admins/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ URL::to('')}}/admins/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
     <!-- AdminLTE App -->
-    <script src="/admins/dist/js/adminlte.js"></script>
+    <script src="{{ URL::to('')}}/admins/dist/js/adminlte.js"></script>
 
-    <script src="/admins/plugins/toastr/toastr.min.js"></script>
+    <script src="{{ URL::to('')}}/admins/plugins/toastr/toastr.min.js"></script>
 
 
 

@@ -10,10 +10,10 @@
     <!-- CSS Files -->
 
 
-    <link href="/assets/css/now-ui-dashboard.css" rel="stylesheet" />
-    <link href="/assets/demo/demo.css" rel="stylesheet" />
-    <link href="/assets/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="/assets/css/now-ui-dashboard.css?v=1.5.0" rel="stylesheet" />
+    <link href="{{ URL::to('')}}/assets/css/now-ui-dashboard.css" rel="stylesheet" />
+    <link href="{{ URL::to('')}}/assets/demo/demo.css" rel="stylesheet" />
+    <link href="{{ URL::to('')}}/assets/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="{{ URL::to('')}}/assets/css/now-ui-dashboard.css?v=1.5.0" rel="stylesheet" />
     <script src="https://kit.fontawesome.com/a8558eb723.js" crossorigin="anonymous"></script>
     <style>
         * {
