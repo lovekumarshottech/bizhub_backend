@@ -112,8 +112,8 @@
 
                     @foreach($dispute->images as $image)
                     <div>
-                        <a href="{{asset('storage/uploads/support/'.$image->file_name)}}" target="_blank">
-                            <img style="margin: 10px;" src="{{asset('storage/uploads/support/'.$image->file_name)}}" alt="{{$image->path}}" width="150px" height="150px">
+                        <a href="/storage/uploads/support/{{$image->file_name}}" target="_blank">
+                            <img style="margin: 10px;" src="/storage/uploads/support/{{$image->file_name}}" alt="{{$image->path}}" width="150px" height="150px">
                         </a>
                     </div>
                     @endforeach

@@ -1,5 +1,4 @@
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
@@ -319,6 +318,7 @@
     /*Media Queries ------------------------------ */
 
     @media only screen and (max-width: 600px) {
+
       .email-body_inner,
       .email-footer {
         width: 100% !important;
@@ -414,8 +414,8 @@
           <tr>
             <td class="email-masthead">
               <a href="javascript:;" class="email-masthead_name">
-                  <img style="width:200px" src="{{asset('assets/admin/images/login-logo.png')}}">
-                </a>
+                <img style="width:200px" src="{{asset('assets/admin/images/login-logo.png')}}">
+              </a>
             </td>
           </tr>
           <!-- Email Body -->
@@ -437,10 +437,10 @@
                                 <table border="0" cellspacing="0" cellpadding="0">
                                   <tr>
                                     <td>
-                                      <span style="font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; font-size: 16px; color: #74787E;">Thanks for creating your account on <strong>{{env('APP_NAME')}}</strong>.<br/><br/>
+                                      <span style="font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; font-size: 16px; color: #74787E;">Thanks for creating your account on <strong>{{env('APP_NAME')}}</strong>.<br /><br />
                                         The OTP to activate your account is
                                         <strong>{{$otp}}</strong>
-                                        </span>
+                                      </span>
                                     </td>
                                   </tr>
                                 </table>
@@ -464,7 +464,7 @@
                     <p class="sub align-center">
                       {{env('APP_NAME')}}
                       <br>{{env('APP_ADDR')}}
-                    <br>{{env('APP_PHONE')}}
+                      <br>{{env('APP_PHONE')}}
                     </p>
                   </td>
                 </tr>

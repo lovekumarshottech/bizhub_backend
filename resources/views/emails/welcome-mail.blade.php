@@ -1,5 +1,4 @@
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
@@ -318,6 +317,7 @@
     /*Media Queries ------------------------------ */
 
     @media only screen and (max-width: 600px) {
+
       .email-body_inner,
       .email-footer {
         width: 100% !important;
@@ -413,8 +413,8 @@
           <tr>
             <td class="email-masthead">
               <a href="javascript:;" class="email-masthead_name">
-                  <img style="width:200px" src="{{asset('assets/admin/images/login-logo.png')}}">
-                </a>
+                <img style="width:200px" src="{{asset('assets/admin/images/login-logo.png')}}">
+              </a>
             </td>
           </tr>
           <!-- Email Body -->
@@ -436,12 +436,12 @@
                                 <table border="0" cellspacing="0" cellpadding="0">
                                   <tr>
                                     <td>
-                                      <span style="font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; font-size: 16px; color: #74787E;">Thanks for creating your account on <strong>{{env('APP_NAME')}}</strong>.<br/><br/>
+                                      <span style="font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; font-size: 16px; color: #74787E;">Thanks for creating your account on <strong>{{env('APP_NAME')}}</strong>.<br /><br />
 
 
-                                        Welcome to <strong>"{{env('APP_NAME')}}"</strong>, we're excited you're here!<br/>
+                                        Welcome to <strong>"{{env('APP_NAME')}}"</strong>, we're excited you're here!<br />
                                         <strong>"{{env('APP_NAME')}}"</strong> is the engine that helps you team generate, organize, track, and nuture your leads and customers. We're also here to provide tons of great resources to help you get set up for success. Let's start now!
-                                        The app will only send one reply to each incoming number until you have either stopped and restarted the responder or have selected a new message to reply with. This will help keep down your number of outgoing messages and will prevent users from getting in an endless loop where both users have the app running.<br/><br/></span>
+                                        The app will only send one reply to each incoming number until you have either stopped and restarted the responder or have selected a new message to reply with. This will help keep down your number of outgoing messages and will prevent users from getting in an endless loop where both users have the app running.<br /><br /></span>
                                     </td>
                                   </tr>
                                 </table>
@@ -455,7 +455,7 @@
                     <table class="body-sub">
                       <tr>
                         <td>
-                          <p class="sub"><span style="font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; font-size: 16px; color: #74787E;">You can access the app by using below credentials<br/><strong>Email : </strong>{{$email}}<br/><strong>Password : </strong>{{$password}}</span></p>
+                          <p class="sub"><span style="font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; font-size: 16px; color: #74787E;">You can access the app by using below credentials<br /><strong>Email : </strong>{{$email}}<br /><strong>Password : </strong>{{$password}}</span></p>
                         </td>
                       </tr>
                     </table>
@@ -473,7 +473,7 @@
                     <p class="sub align-center">
                       {{env('APP_NAME')}}
                       <br>{{env('APP_ADDR')}}
-                    <br>{{env('APP_PHONE')}}
+                      <br>{{env('APP_PHONE')}}
                     </p>
                   </td>
                 </tr>

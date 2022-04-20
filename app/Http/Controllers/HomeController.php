@@ -40,7 +40,7 @@ class HomeController extends Controller
     //all services view
     public function allServicesView()
     {
-        return view('admin.jobs',);
+        return view('admin.jobs');
     }
 
     public function allServices()

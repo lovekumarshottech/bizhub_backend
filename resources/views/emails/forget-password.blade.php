@@ -1,5 +1,4 @@
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
@@ -318,6 +317,7 @@
     /*Media Queries ------------------------------ */
 
     @media only screen and (max-width: 600px) {
+
       .email-body_inner,
       .email-footer {
         width: 100% !important;
@@ -413,8 +413,8 @@
           <tr>
             <td class="email-masthead">
               <a href="javascript:;" class="email-masthead_name">
-                  <img style="width:200px" src="{{asset('assets/admin/images/login-logo.png')}}">
-                </a>
+                <img style="width:200px" src="{{public_path('assets/admin/images/login-logo.png')}}">
+              </a>
             </td>
           </tr>
           <!-- Email Body -->
@@ -466,7 +466,7 @@
                     <p class="sub align-center">
                       {{env('APP_NAME')}}
                       <br>{{env('APP_ADDR')}}
-                    <br>{{env('APP_PHONE')}}
+                      <br>{{env('APP_PHONE')}}
                     </p>
                   </td>
                 </tr>
