@@ -87,6 +87,8 @@ class SupportController extends BaseController
 
         $rand = rand(1000, 9999);
 
+        // public_path()/storage/uploads/support/423423.png
+
         $fileName = $rand . time() . '.' . $image->extension;
         $destinationPath = public_path() . '/storage/uploads/' . $destinationPath;
         file_put_contents($destinationPath . $fileName, base64_decode($image->image));

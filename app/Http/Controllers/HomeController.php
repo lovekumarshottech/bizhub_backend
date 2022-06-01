@@ -131,11 +131,12 @@ class HomeController extends Controller
     }
     public function allDisputesView()
     {
-        // $disputes = Support::with(['supportImages', 'service', 'service.user'])->get();
-        // //application which is cancel according to the service
-        // foreach ($disputes as $dispute) {
-        //     $dispute->application = $dispute->service->application()->where('service_id', $dispute->service_id)->where('status', '4')->with('user')->first();
-        // }
+        
+        //  $disputes = Support::with(['images', 'service', 'service.user'])->get();
+        //     //application which is cancel according to the service
+        //     foreach ($disputes as $dispute) {
+        //         $dispute->application = $dispute->service->application()->where('service_id', $dispute->service_id)->where('status', '4')->with('user')->first();
+        //     }
         // return response()->json($disputes);
 
         return view('admin.disputes');
@@ -146,7 +147,7 @@ class HomeController extends Controller
     {
         $dispute = Support::with(['images', 'service', 'service.user'])->find($id);
         $dispute->application = $dispute->service->application()->where('service_id', $dispute->service_id)->where('status', '4')->with('user')->first();
-        // return response()->json($dispute->images);
+        // return response()->json($dispute);
         return view('admin.show-dispute', compact('dispute'));
     }
 

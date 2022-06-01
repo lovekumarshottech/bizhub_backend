@@ -121,6 +121,14 @@ Route::get('/clear', function () {
     return "Cleared!";
 });
 
+Route::get('/storagelink', function () {
+
+    Artisan::call('storage:link');
+
+    return "Linked!";
+});
+
+
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

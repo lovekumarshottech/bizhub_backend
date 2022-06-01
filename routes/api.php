@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\ServiceController;
 use App\Http\Controllers\Api\CommentController;
+use App\Http\Controllers\Api\PaymentController;
 use App\Http\Controllers\Api\StripeUtilController;
 use App\Http\Controllers\SupportController;
 use App\Models\Support;
@@ -37,11 +38,11 @@ Route::post('reset-password', [AuthController::class, 'resetPassword']);
 Route::post('contactUs', [ServiceController::class, 'contactUs']);
 
 Route::middleware('auth:api')->group(function () {
+    Route::get('categories', [CategoryController::class, 'index']);
     Route::post('logout', [AuthController::class, 'logout']);
     Route::post('change-password', [AuthController::class, 'updatePassword']);
     // Route::get('profile', [AuthController::class, 'profile']);
     Route::put('update-profile', [AuthController::class, 'updateProfile']);
-    Route::get('categories', [CategoryController::class, 'index']);
     Route::post('apply-service', [ServiceController::class, 'applyService']);
     Route::put('start-interview', [ServiceController::class, 'startInterview']);
 
@@ -56,6 +57,9 @@ Route::middleware('auth:api')->group(function () {
     Route::get('jobComplete/{id}', [ServiceController::class, 'jobComplete']);
     Route::post('jobCancel', [ServiceController::class, 'jobCancel']);
     Route::get('show-service/{service}', [ServiceController::class, 'showService']);
+    
+    Route::post('edit-service-application', [ServiceController::class, 'serviceApplicationEdit']);
+    Route::get('delete-service-application/{id}', [ServiceController::class, 'serviceApplicationDelete']);
 
     Route::post('create-account', [StripeUtilController::class, 'create']);
 
@@ -66,6 +70,9 @@ Route::middleware('auth:api')->group(function () {
     ]);
 
     Route::post('create-dispute', [SupportController::class, 'store']);
+    
+    Route::get('earned-payments/{status}', [PaymentController::class, 'activeAndCompleteEarnedPayments']);
+    Route::get('spend-payments/{status}', [PaymentController::class, 'activeAndCompleteSpendPayments']);
 });
 Route::post('checkout-session', [StripeUtilController::class, 'checkoutSession']);
 

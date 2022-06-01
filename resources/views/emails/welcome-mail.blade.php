@@ -475,6 +475,7 @@
                       <br>{{env('APP_ADDR')}}
                       <br>{{env('APP_PHONE')}}
                     </p>
+              
                   </td>
                 </tr>
               </table>

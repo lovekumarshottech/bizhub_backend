@@ -25,6 +25,8 @@ class Service extends Model
         'start_date',
         'no_of_ppl',
         'status',
+        'type',
+        'image'
     ];
 
 
@@ -77,5 +79,4 @@ class Service extends Model
     {
         return $this->hasOne(Support::class);
     }
-   
 }

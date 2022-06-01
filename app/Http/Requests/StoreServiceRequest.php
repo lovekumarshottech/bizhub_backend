@@ -27,15 +27,17 @@ class StoreServiceRequest extends FormRequest
     public function rules()
     {
         return [
-            'title' => ['required','min:10','max:100'],
+            'title' => ['required', 'min:10', 'max:100'],
             'description' => ['required'],
             'address' => ['required'],
+            'type' => ['required'],
+            'image' => ['nullable'],
             'latitude' => ['required'],
             'is_negotiable' => ['required'],
             'longitude' => ['required'],
-            'start_date' => ['required'],
-            'no_of_ppl' => ['required'],
-            'amount' => ['required','regex:/^\d+(\.\d{1,2})?$/'],
+            'start_date' => ['required_if:type,0'],
+            'no_of_ppl' => ['required_if:type,0'],
+            'amount' => ['required', 'regex:/^\d+(\.\d{1,2})?$/'],
             'category_id' => 'required|not_in:0'
         ];
     }
@@ -53,7 +55,8 @@ class StoreServiceRequest extends FormRequest
         ];
     }
 
-    public function prepareForValidation(){
+    public function prepareForValidation()
+    {
         $this->merge([
             'user_id' => Auth::user()->id,
             'no_of_ppl' => $this->people_required

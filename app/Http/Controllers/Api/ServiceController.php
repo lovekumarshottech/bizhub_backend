@@ -13,6 +13,7 @@ use App\Models\User;
 use Illuminate\Database\Query;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 
@@ -119,11 +120,52 @@ class ServiceController extends BaseController
                 'start_date' => $request->start_date
             ]);
         if ($services) {
-            return $this->sendResponse(Response::HTTP_OK, $services, 'Services Data Has Been Successfully Updated.');
+            return $this->sendResponse(Response::HTTP_OK, $services, 'Service Updated Successfully');
         } else {
-            return $this->sendError(Response::HTTP_NOT_FOUND, $services, 'Service Failed Data Not Found or InComplete.');
+            return $this->sendError(Response::HTTP_NOT_FOUND, $services, 'Service Updated Failed');
         }
         // }
+    }
+
+
+    public function serviceApplicationEdit(Request $request)
+    {
+        $request->validate([
+            'id' => 'required',
+            'amount' => 'required|regex:/^\d+(\.\d{1,2})?$/',
+            'description' => 'required|min:3',
+        ]);
+        $serviceApplication = ServiceApplication::where('id', $request->id)->where('user_id', $request->user()->id)->first();
+
+        if ($serviceApplication) {
+            if ($serviceApplication['status'] == "0") {
+
+                $serviceApplication->update([
+                    'amount' => $request->amount,
+                    'description' => $request->description,
+                ]);
+                return $this->sendResponse(Response::HTTP_OK, $serviceApplication, 'Applied Service Offer Updated');
+            } else {
+                return $this->sendError('Service Application Failed Job is Not Active.');
+            }
+        } else {
+            return $this->sendError('Service Application Failed Data Not Found or InComplete.');
+        }
+    }
+
+    public function serviceApplicationDelete($id)
+    {
+        $serviceApplication = ServiceApplication::where('id', $id)->where('user_id', request()->user()->id)->first();
+        if ($serviceApplication) {
+            if ($serviceApplication->status == "0") {
+                $serviceApplication->delete();
+                return $this->sendResponse(Response::HTTP_OK, $serviceApplication, 'Service Application has been Successfully Deleted.');
+            } else {
+                return $this->sendError('Failed to Delete Application, Job is Not Active.');
+            }
+        } else {
+            return $this->sendError('Service Application Failed Data not Found or InComplete.');
+        }
     }
 
 
@@ -136,16 +178,17 @@ class ServiceController extends BaseController
                 $service->delete();
                 return $this->sendResponse(Response::HTTP_OK, $service, 'Service Deleted successfuly.');
             } else {
-                return $this->sendError(Response::HTTP_NOT_FOUND, $service, 'Service Deleting Failed Data Not Found.');
+                return $this->sendError('Service Deleting Failed Data Not Found.');
             }
         } else {
-            return $this->sendError(Response::HTTP_NOT_FOUND, $id, 'Service Deleting Failed ID Is Required.');
+            return $this->sendError('Service Deleting Failed ID Is Required.');
         }
     }
 
 
     public function myServies($id)
     {
+
         try {
             $service = Service::findOrFail($id);
             $serviceData = $service->whereHas('user', function ($q) {
@@ -155,7 +198,8 @@ class ServiceController extends BaseController
                     return $q->select('id', 'user_id', 'service_id', 'comment', 'created_at')->where('parent_id', null);
                 }, 'comments.reply:id,parent_id,user_id,comment,service_id,created_at', 'comments.reply.user:id,device_id,first_name,last_name,image'
             ])->where('id', $service->id)->first();
-            $service->rating = \DB::table('ratings')->where(['user_id' => request()->user()->id], ['service_id' => $id])->first();
+
+            $serviceData->rating = \DB::table('ratings')->where('user_id', request()->user()->id)->where('service_id', $id)->first();
 
             foreach ($serviceData->applications as $apps) {
                 $totalReviews = 0;
@@ -168,7 +212,7 @@ class ServiceController extends BaseController
                 if ($totalReviews > 0) {
                     $totalRatings /= $totalReviews;
                     $apps->totalReviews = (int)$totalReviews;
-                    $apps->totalRatings = (int)$totalRatings;
+                    $apps->totalRatings = $totalRatings;
                 } else {
                     $apps->totalReviews = 'No Reviews';
                     $apps->totalRatings = 0;
@@ -324,9 +368,49 @@ class ServiceController extends BaseController
     }
 
 
+    // public function jobComplete($service_id)
+    // {
+
+    //     $job = \DB::table('services')
+    //         ->where('id', '=', $service_id) // $id represents service_id ??
+    //         ->where('status', '=', '3')
+    //         ->update(['status' => '1']);
+    //     $status = DB::table('service_applications')
+    //         ->where('status', '=', '2')
+    //         ->where('service_id', $service_id) // $id represents service_id ??
+    //         ->update(['status' => '1']);
+
+    //     return $this->sendResponse(Response::HTTP_OK, $job, 'Job Completed Successfuly.');
+    // }
+
     public function jobComplete($service_id)
     {
+        // return $service_id;
+        $pay_userid = \DB::table('payments')    //to fetch user_id and amount
+            ->select('id', 'to_user_id', 'amount')
+            ->where('service_id', $service_id)->first();
+        // return $pay_userid;
+        //fetch to_user_id,amount from the payment table through service id
+        //fetch account number from user table through to_user_id
+        $acount_number = \DB::table('users')  //to fetch acount number
+            ->select('account_id')
+            ->where('id', $pay_userid->to_user_id)->first();
+        $amount_payment_table = $pay_userid->amount;
+        $amount_payment_table = round($amount_payment_table - ($amount_payment_table * (config('app.admin_cut') / 100)));
+        //on job accept we will send you the transaction id and other parameters u need we will send to you.
+        //add transaction id in the table
 
+        //on job complete method will be post body parameter will be account id and id of the service
+
+        //transfer to the user when the job is complete
+        //cut the fees
+        \Stripe\Stripe::setApiKey(config('services.stripe.secret'));
+        $transfer = \Stripe\Transfer::create([
+            "amount" => $amount_payment_table, #this is after admin cut
+            "currency" => "usd",
+            "destination" => $acount_number->account_id,
+        ]);
+        // transfer id where to store in the table??
         $job = \DB::table('services')
             ->where('id', '=', $service_id) // $id represents service_id ??
             ->where('status', '=', '3')
@@ -336,7 +420,29 @@ class ServiceController extends BaseController
             ->where('service_id', $service_id) // $id represents service_id ??
             ->update(['status' => '1']);
 
-        return $this->sendResponse(Response::HTTP_OK, $job, 'Job Completed Successfuly.');
+
+        return $this->payout($acount_number->account_id, $amount_payment_table, $pay_userid->id, $transfer->id);
+    }
+
+    public function payout($accountId, $amount, $paymentId, $transferId)
+    {
+        // return 'asd';
+        \Stripe\Stripe::setApiKey(config('services.stripe.secret'));
+
+        $payout = \Stripe\Payout::create([
+            'amount' => $amount,
+            'currency' => 'usd',
+        ], [
+            'stripe_account' => $accountId,
+        ]);
+
+        \DB::table('payments')
+            ->where('id', '=', $paymentId)
+            ->update(['transfer_id' => $transferId, 'payout_id' => $payout->id]);
+
+
+        // return response()->json(['success' => true, 'data' => $payout]);
+        return $this->sendResponse(Response::HTTP_OK, $payout, 'Job Completed Successfully.');
     }
 
     // changes
@@ -394,24 +500,26 @@ class ServiceController extends BaseController
     }
 
 
+    public function convert($image)
+    {
+
+
+        list($type, $image) = explode(',', $image);
+        $imageName = sprintf("%s.%s", time(), 'png');
+        $path = 'uploads/services/' . $imageName;
+        Storage::disk('local')->put($path, base64_decode($image));
+        return $path;
+    }
+
     public function store(StoreServiceRequest $request)
     {
-        // dd(auth()->id());
-        // dd($request->all());
-        // Service::create($request->validated() + [
-        //     'user_id' => auth()->id()
-        // ]);
-        // Service::create(array_merge(
-        //     $request->validated(),
-        //     [
-        //         'user_id' => auth()->id(),
-        //     ]
-        //     ));
-
+        $serviceRequest = $request->validated();
+        if ($request->has('image')) {
+            $path = $this->convert($request->image);
+        }
         $user = $request->user();
-
-        $service = new Service($request->validated());
-
+        $serviceRequest['image'] = $path;
+        $service = new Service($serviceRequest);
 
         $user->services()->save($service);
         return $this->sendResponse(Response::HTTP_CREATED, [], 'Job created successfully.');
@@ -437,7 +545,7 @@ class ServiceController extends BaseController
             if ($totalReviews > 0) {
                 $totalRatings /= $totalReviews;
                 $apps->totalReviews = (int)$totalReviews;
-                $apps->totalRatings = (int)$totalRatings;
+                $apps->totalRatings = $totalRatings;
             } else {
                 $apps->totalReviews = 'No Reviews';
                 $apps->totalRatings = 0;
@@ -456,7 +564,7 @@ class ServiceController extends BaseController
         $service->comments = $service->comments()->with(['user', 'reply.user'])->whereNull('parent_id')->where('user_id', request()->user()->id)->get();
         $service->support = $service->support;
         // $service->rating = \DB::table('ratings')->where('user_rate_to', request()->user()->id)->where('service_id', $service->id)->first();
-        $service->rating = \DB::table('ratings')->where(['user_id' => request()->user()->id], ['service_id' => $service->id])->first();
+        $service->rating = \DB::table('ratings')->where('user_id', request()->user()->id)->where('service_id', $service->id)->first();
 
 
 

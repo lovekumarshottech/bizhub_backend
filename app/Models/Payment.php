@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -16,6 +17,12 @@ class Payment extends Model
     'transaction_id',
     'amount',
   ];
+  
+  public function getCreatedAtAttribute($date)
+    {
+        if (!empty($date))
+            return Carbon::parse($date)->diffForHumans();
+    }
 
   public function from()
   {
@@ -26,4 +33,9 @@ class Payment extends Model
   {
     return $this->belongsTo(User::class, 'to_user_id');
   }
+
+     public function service()
+    {
+        return $this->belongsTo(Service::class);
+    }
 }
